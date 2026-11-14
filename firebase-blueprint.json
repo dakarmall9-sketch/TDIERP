@@ -1,0 +1,387 @@
+{
+  "entities": {
+    "CompanySettings": {
+      "title": "CompanySettings",
+      "description": "Configuration de l'entreprise unique exploitant l'ERP TransMove OS.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "country": { "type": "string", "maxLength": 100 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 10 },
+        "logoText": { "type": "string", "maxLength": 40 },
+        "address": { "type": "string", "maxLength": 300 },
+        "phone": { "type": "string", "maxLength": 80 },
+        "email": { "type": "string", "maxLength": 160 },
+        "taxNumber": { "type": "string", "maxLength": 120 },
+        "defaultTaxRate": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "currency", "email"]
+    },
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Compte utilisateur authentifié (employé ou client invité) avec rôle et permissions.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 160 },
+        "displayName": { "type": "string", "maxLength": 160 },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "manager", "commercial", "dispatcher", "driver", "accountant", "warehouse", "fleet_manager", "hr", "client"]
+        },
+        "permissions": { "type": "array" },
+        "employeeId": { "type": "string", "maxLength": 128 },
+        "isActive": { "type": "boolean" },
+        "invitedBy": { "type": "string", "maxLength": 160 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "isActive"]
+    },
+    "Invitation": {
+      "title": "Invitation",
+      "description": "Liste blanche d'invitations gérée par l'Administrateur pour autoriser la connexion des employés et clients.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 160 },
+        "displayName": { "type": "string", "maxLength": 160 },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "manager", "commercial", "dispatcher", "driver", "accountant", "warehouse", "fleet_manager", "hr", "client"]
+        },
+        "permissions": { "type": "array" },
+        "employeeId": { "type": "string", "maxLength": 128 },
+        "isActive": { "type": "boolean" },
+        "invitedBy": { "type": "string", "maxLength": 160 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "displayName", "role", "isActive"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Demande de déménagement / transit et fiche client associée.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "clientEmail": { "type": "string", "maxLength": 160 },
+        "clientPhone": { "type": "string", "maxLength": 60 },
+        "originAddress": { "type": "string", "maxLength": 300 },
+        "originElevator": { "type": "boolean" },
+        "originPropertyType": {
+          "type": "string",
+          "enum": ["appartement", "maison", "immeuble"],
+          "description": "Type de bien au point de départ."
+        },
+        "originFloorLevel": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Niveau / étage au départ pour Appartement ou Immeuble."
+        },
+        "originFloorLevelOther": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Précision libre au départ lorsque Niveau / étage vaut Autre."
+        },
+        "originLevelsCount": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Nombre de niveaux (R+X) au départ pour Maison."
+        },
+        "originLevelsCountOther": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Précision libre au départ lorsque Nombre de niveaux vaut Autre."
+        },
+        "destinationAddress": { "type": "string", "maxLength": 300 },
+        "destinationElevator": { "type": "boolean" },
+        "destinationPropertyType": {
+          "type": "string",
+          "enum": ["appartement", "maison", "immeuble"],
+          "description": "Type de bien au point de destination."
+        },
+        "destinationFloorLevel": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Niveau / étage à destination pour Appartement ou Immeuble."
+        },
+        "destinationFloorLevelOther": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Précision libre à destination lorsque Niveau / étage vaut Autre."
+        },
+        "destinationLevelsCount": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Nombre de niveaux (R+X) à destination pour Maison."
+        },
+        "destinationLevelsCountOther": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Précision libre à destination lorsque Nombre de niveaux vaut Autre."
+        },
+        "targetDate": { "type": "string", "maxLength": 30 },
+        "serviceType": { "type": "string", "maxLength": 40 },
+        "serviceTransportMode": {
+          "type": "string",
+          "enum": ["aerien", "maritime", "terrestre"],
+          "description": "Mode de transport conditionnel lorsque Type de prestation est Export ou Import."
+        },
+        "status": { "type": "string", "maxLength": 40 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "code", "clientName", "clientEmail", "clientPhone", "originAddress", "destinationAddress", "targetDate", "serviceType", "status"]
+    },
+    "VolumeEstimation": {
+      "title": "VolumeEstimation",
+      "description": "Inventaire détaillé du mobilier et calcul volumétrique rattaché à un RDV.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "appointmentId": { "type": "string", "maxLength": 128 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "totalTransportM3": { "type": "number" },
+        "recommendedVehicles": { "type": "string", "maxLength": 160 },
+        "recommendedVehicleVolumeM3": { "type": "number" },
+        "recommendedMovers": { "type": "number" },
+        "recommendedWorkDays": { "type": "number" },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "clientName", "totalTransportM3", "items"]
+    },
+    "Quote": {
+      "title": "Quote",
+      "description": "Devis commercial chiffré et lignes tarifaires.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "number": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "clientEmail": { "type": "string", "maxLength": 160 },
+        "total": { "type": "number" },
+        "status": { "type": "string", "maxLength": 40 },
+        "currency": { "type": "string", "maxLength": 10 }
+      },
+      "required": ["id", "number", "clientName", "clientEmail", "total", "status", "currency"]
+    },
+    "Chantier": {
+      "title": "Chantier",
+      "description": "Chantier opérationnel planifié et suivi terrain.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "clientEmail": { "type": "string", "maxLength": 160 },
+        "scheduledDate": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "code", "clientName", "scheduledDate", "status"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Facture client et historique des règlements.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "number": { "type": "string", "maxLength": 50 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "clientEmail": { "type": "string", "maxLength": 160 },
+        "totalAmount": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "status": { "type": "string", "maxLength": 40 },
+        "currency": { "type": "string", "maxLength": 10 }
+      },
+      "required": ["id", "number", "clientName", "clientEmail", "totalAmount", "paidAmount", "status", "currency"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Dépense opérationnelle imputée à un chantier, véhicule ou frais généraux.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 30 },
+        "category": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 300 },
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 }
+      },
+      "required": ["id", "date", "category", "description", "amount", "currency"]
+    },
+    "TransitShipment": {
+      "title": "TransitShipment",
+      "description": "Dossier de transit international et dédouanement.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "reference": { "type": "string", "maxLength": 60 },
+        "operationType": { "type": "string", "maxLength": 30 },
+        "clientName": { "type": "string", "maxLength": 180 },
+        "status": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "reference", "operationType", "clientName", "status"]
+    },
+    "ShippingLine": {
+      "title": "ShippingLine",
+      "description": "Compagnie maritime ou transporteur routier et grilles tarifaires.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "code": { "type": "string", "maxLength": 30 }
+      },
+      "required": ["id", "name", "code"]
+    },
+    "StockItem": {
+      "title": "StockItem",
+      "description": "Article de stock et consommables d'emballage.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 40 },
+        "name": { "type": "string", "maxLength": 160 },
+        "quantityInStock": { "type": "number" }
+      },
+      "required": ["id", "code", "name", "quantityInStock"]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Journal des mouvements de stock.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 30 },
+        "stockItemId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "maxLength": 40 },
+        "quantity": { "type": "number" }
+      },
+      "required": ["id", "date", "stockItemId", "type", "quantity"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Véhicule de la flotte avec conformité et géolocalisation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "plateNumber": { "type": "string", "maxLength": 40 },
+        "brand": { "type": "string", "maxLength": 80 },
+        "model": { "type": "string", "maxLength": 80 },
+        "status": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "plateNumber", "brand", "model", "status"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Fiche employé RH avec rôle et permissions modules.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "firstName": { "type": "string", "maxLength": 100 },
+        "lastName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 160 },
+        "role": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "firstName", "lastName", "email", "role"]
+    },
+    "EmailMessage": {
+      "title": "EmailMessage",
+      "description": "Historique des emails envoyés et reçus rattachés aux entités ERP.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "folder": { "type": "string", "maxLength": 20 },
+        "recipientEmail": { "type": "string", "maxLength": 160 },
+        "subject": { "type": "string", "maxLength": 250 },
+        "date": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "folder", "recipientEmail", "subject", "date"]
+    },
+    "AutomationLog": {
+      "title": "AutomationLog",
+      "description": "Journal d'audit des automatisations exécutées.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "triggerEvent": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "maxLength": 20 }
+      },
+      "required": ["id", "timestamp", "triggerEvent", "status"]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/CompanySettings" },
+      "description": "Paramètres généraux de l'entreprise et configuration transport."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserAccount" },
+      "description": "Comptes utilisateurs activés (employés et clients)."
+    },
+    "/invitations/{emailKey}": {
+      "schema": { "$ref": "#/entities/Invitation" },
+      "description": "Invitations autorisées créées par l'Administrateur."
+    },
+    "/appointments/{appointmentId}": {
+      "schema": { "$ref": "#/entities/Appointment" },
+      "description": "Demandes de RDV et fiches clients."
+    },
+    "/volumeEstimations/{estimationId}": {
+      "schema": { "$ref": "#/entities/VolumeEstimation" },
+      "description": "Inventaires de mobilier sauvegardés par RDV."
+    },
+    "/quotes/{quoteId}": {
+      "schema": { "$ref": "#/entities/Quote" },
+      "description": "Devis et contrats."
+    },
+    "/chantiers/{chantierId}": {
+      "schema": { "$ref": "#/entities/Chantier" },
+      "description": "Chantiers de déménagement planifiés."
+    },
+    "/invoices/{invoiceId}": {
+      "schema": { "$ref": "#/entities/Invoice" },
+      "description": "Factures et règlements."
+    },
+    "/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Dépenses opérationnelles."
+    },
+    "/transitShipments/{shipmentId}": {
+      "schema": { "$ref": "#/entities/TransitShipment" },
+      "description": "Dossiers de transit et douane."
+    },
+    "/shippingLines/{lineId}": {
+      "schema": { "$ref": "#/entities/ShippingLine" },
+      "description": "Armateurs maritimes et transporteurs routiers."
+    },
+    "/stockItems/{itemId}": {
+      "schema": { "$ref": "#/entities/StockItem" },
+      "description": "Références de stock et consommables."
+    },
+    "/stockMovements/{movementId}": {
+      "schema": { "$ref": "#/entities/StockMovement" },
+      "description": "Historique des entrées/sorties/réservations de stock."
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": { "$ref": "#/entities/Vehicle" },
+      "description": "Flotte de véhicules."
+    },
+    "/employees/{employeeId}": {
+      "schema": { "$ref": "#/entities/Employee" },
+      "description": "Personnel et droits d'accès."
+    },
+    "/emails/{emailId}": {
+      "schema": { "$ref": "#/entities/EmailMessage" },
+      "description": "Messagerie transactionnelle et emails."
+    },
+    "/automationLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AutomationLog" },
+      "description": "Journal des automatisations."
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "TDI - ERP Déménagement \u0026 Transit",
+  "description": "Plateforme SaaS ERP intégrée pour entreprises de déménagement, transport et transit international avec automatisation de bout en bout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
